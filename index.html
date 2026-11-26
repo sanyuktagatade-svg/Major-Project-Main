@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURORA | Smart Karnataka</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- AUTHENTICATION -->
+<div id="authPage" class="auth-page">
+    <div class="auth-card">
+        <h1>AURORA</h1>
+        <p>AI Powered Smart Karnataka Platform</p>
+
+        <div id="loginBox">
+            <h2>Welcome Back</h2>
+            <input id="loginEmail" type="email" placeholder="Email">
+            <input id="loginPassword" type="password" placeholder="Password">
+            <button id="loginBtn" type="button">Login</button>
+            <p>Don't have an account? <a href="#" id="showRegister">Register</a></p>
+        </div>
+
+        <div id="registerBox" hidden>
+            <h2>Create Account</h2>
+            <input id="registerName" type="text" placeholder="Full Name">
+            <input id="registerEmail" type="email" placeholder="Email">
+            <input id="registerPassword" type="password" placeholder="Password">
+            <button id="registerBtn" type="button">Register</button>
+            <p>Already registered? <a href="#" id="showLogin">Login</a></p>
+        </div>
+
+        <p id="authMessage"></p>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" hidden>
+    <aside class="sidebar">
+        <div class="brand">
+            <h2>AURORA</h2>
+            <small>SMART KARNATAKA</small>
+        </div>
+
+        <nav>
+            <button type="button" data-page="homePage" class="active">Dashboard</button>
+            <button type="button" data-page="agentsPage">AI Agents</button>
+            <button type="button" data-page="mapPage">GPS Map</button>
+            <button type="button" data-page="analyticsPage">Analytics</button>
+            <button type="button" data-page="eventsPage">City Events</button>
+            <button type="button" data-page="policiesPage">Policies</button>
+            <button type="button" data-page="suppliesPage">Supplies</button>
+            <button type="button" data-page="settingsPage">Settings</button>
+        </nav>
+
+        <button id="logoutBtn" type="button" class="logout-button">Logout</button>
+    </aside>
+
+    <div class="main-area">
+        <header class="topbar">
+            <div>
+                <h1>Smart City Command Centre</h1>
+                <p>5 AI agents per city &amp; village across Karnataka</p>
+            </div>
+            <div style="text-align: right;">
+                <span class="live-indicator">SYSTEM ONLINE</span>
+                <p id="loggedInUser" style="margin: 6px 0 0; font-size: 0.85rem; opacity: 0.85;"></p>
+            </div>
+        </header>
+
+        <main>
+
+            <!-- DASHBOARD -->
+            <section id="homePage" class="page">
+                <h2>City &amp; Village Overview</h2>
+                <p>Every city and village has 5 dedicated AI agents: Traffic, Emergency, Environment, Energy, and Public Safety.</p>
+
+                <div class="stats">
+                    <div class="panel">
+                        <h3>Total AI Agents</h3>
+                        <p id="agentCount">0</p>
+                    </div>
+                    <div class="panel">
+                        <h3>GPS Devices</h3>
+                        <p id="deviceCount">0</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Simulation</h3>
+                        <p id="simulationValue">Stopped</p>
+                    </div>
+                    <div class="panel">
+                        <h3>System Status</h3>
+                        <p>Online</p>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Simulation Control</h2>
+                    <button id="runSimulation" type="button">Run Simulation</button>
+                    <button id="resetSimulation" type="button" class="secondary">Reset Simulation</button>
+                    <p id="simulationStatus">Simulation stopped</p>
+                </div>
+
+                <div class="panel">
+                    <h2>Live Traffic &amp; GPS Intelligence</h2>
+                    <p id="trafficActionSummary">Waiting for live GPS tracking to analyze traffic conditions.</p>
+                    <p id="liveLocationSummary">Location: Not shared yet (go to GPS Map and click Enable My GPS).</p>
+                </div>
+
+                <div class="panel">
+                    <h2>Platform Information</h2>
+                    <p>AURORA assigns 5 AI agents to every city and village in Karnataka and lets you add any village or town on demand.</p>
+                    <p class="notice">Simulation data is illustrative and is not verified live incident information.</p>
+                </div>
+            </section>
+
+            <!-- AI AGENTS -->
+            <section id="agentsPage" class="page" hidden>
+                <h2>AI Agents Monitoring (5 Per City / Village)</h2>
+                <p>Select a city or village to view its 5 agents, or add any village/city in Karnataka with 5 agents.</p>
+
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px;">
+                    <label for="cityFilterAgents">Place: </label>
+                    <select id="cityFilterAgents">
+                        <option value="ALL">All Cities &amp; Villages</option>
+                    </select>
+
+                    <input id="customPlaceName" type="text" placeholder="Village or City name">
+                    <input id="customPlaceLat" type="number" step="any" placeholder="Latitude (e.g. 14.7948)">
+                    <input id="customPlaceLng" type="number" step="any" placeholder="Longitude (e.g. 75.4112)">
+                    <button id="addPlaceAgentsBtn" type="button">Add 5 Agents for Place</button>
+                </div>
+
+                <div id="agents" class="grid"></div>
+            </section>
+
+            <!-- GPS MAP -->
+            <section id="mapPage" class="page" hidden>
+                <h2>GPS City &amp; Village Map</h2>
+                <p id="gpsStatus">Waiting for GPS data.</p>
+                <div style="margin-bottom: 10px;">
+                    <label for="cityFilterMap">Map Place View: </label>
+                    <select id="cityFilterMap">
+                        <option value="ALL">All Cities &amp; Villages</option>
+                    </select>
+                </div>
+                <div id="map" style="height: 420px; width: 100%; border-radius: 10px;"></div>
+                <button id="enableGPS" type="button">Enable My GPS</button>
+                <div class="panel" style="margin-top: 12px;">
+                    <h3>Traffic Agent Live Advisory</h3>
+                    <p id="mapTrafficAdvisory">Enable GPS to receive real-time traffic flow and routing guidance.</p>
+                </div>
+            </section>
+
+            <!-- ANALYTICS -->
+            <section id="analyticsPage" class="page" hidden>
+                <h2>City Analytics</h2>
+                <div class="grid">
+                    <div class="panel">
+                        <h3>Incident Distribution</h3>
+                        <canvas id="incidentChart" height="220"></canvas>
+                    </div>
+                    <div class="panel">
+                        <h3>Agent Performance</h3>
+                        <canvas id="agentChart" height="220"></canvas>
+                    </div>
+                    <div class="panel">
+                        <h3>City Activity</h3>
+                        <canvas id="activityChart" height="220"></canvas>
+                    </div>
+                </div>
+                <p class="notice">Charts display live platform &amp; regional telemetry data.</p>
+            </section>
+
+            <!-- CITY EVENTS -->
+            <section id="eventsPage" class="page" hidden>
+                <h2>City &amp; Village Events</h2>
+                <p>Monitor live reports and events across Karnataka places.</p>
+                <div id="events" class="grid"></div>
+            </section>
+
+            <!-- POLICIES -->
+            <section id="policiesPage" class="page" hidden>
+                <h2>Smart City &amp; Village Policies</h2>
+                <div class="grid">
+                    <div class="panel">
+                        <h3>Traffic Management</h3>
+                        <p>Improve road flow and reduce congestion across cities and villages.</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Public Safety</h3>
+                        <p>Support local safety monitoring and alerts.</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Emergency Response</h3>
+                        <p>Coordinate emergency and ambulance routing.</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Environment</h3>
+                        <p>Monitor air quality, water, and local weather conditions.</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Energy &amp; Grid</h3>
+                        <p>Balance power supply and monitor local outages.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SUPPLIES -->
+            <section id="suppliesPage" class="page" hidden>
+                <h2>Emergency Supplies</h2>
+                <div class="grid">
+                    <div class="panel">
+                        <h3>Medical Supplies</h3>
+                        <p>Availability: Updated — Ready at District &amp; Taluk Hubs</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Emergency Equipment</h3>
+                        <p>Availability: Updated — Active &amp; Deployed</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Water Supplies</h3>
+                        <p>Availability: Updated — Tankers &amp; Reservoirs Verified</p>
+                    </div>
+                </div>
+                <p class="notice">Emergency supply inventory status is updated.</p>
+            </section>
+
+            <!-- SETTINGS -->
+            <section id="settingsPage" class="page" hidden>
+                <h2>Settings</h2>
+                <div class="panel">
+                    <h3>User Profile</h3>
+                    <label for="displayName">Display Name</label>
+                    <input id="displayName" type="text" placeholder="Enter display name">
+                    <button id="saveSettings" type="button">Save Settings</button>
+                    <p id="settingsMessage"></p>
+                </div>
+                <div class="panel">
+                    <h3>GPS and Notifications</h3>
+                    <p>GPS access is requested only when you select Enable My GPS.</p>
+                    <p>Browser notification support depends on your device permissions.</p>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            AURORA | Multi AI Agent Smart Karnataka Simulation Platform
+        </footer>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="/js/app.js"></script>
+
+</body>
+</html>

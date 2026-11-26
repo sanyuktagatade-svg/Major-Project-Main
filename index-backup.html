@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURORA | Smart Karnataka</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet/dist/leaflet.css">
+</head>
+<body>
+
+<div id="authPage">
+    <h1>AURORA</h1>
+    <p>Smart Karnataka AI Platform</p>
+
+    <div id="loginBox">
+        <h2>Login</h2>
+        <input id="loginEmail" type="email" placeholder="Email">
+        <input id="loginPassword" type="password" placeholder="Password">
+        <button id="loginBtn">Login</button>
+        <p>Don't have an account?
+            <a href="#" id="showRegister">Register</a>
+        </p>
+    </div>
+
+    <div id="registerBox" hidden>
+        <h2>Create Account</h2>
+        <input id="registerName" placeholder="Full Name">
+        <input id="registerEmail" type="email" placeholder="Email">
+        <input id="registerPassword" type="password" placeholder="Password">
+        <button id="registerBtn">Register</button>
+        <p>Already registered?
+            <a href="#" id="showLogin">Login</a>
+        </p>
+    </div>
+
+    <p id="authMessage"></p>
+</div>
+
+<div id="dashboard" hidden>
+    <header>
+        <h1>AURORA | Smart Karnataka</h1>
+        <button id="logoutBtn">Logout</button>
+    </header>
+
+    <nav>
+        <button data-page="homePage">Dashboard</button>
+        <button data-page="agentsPage">AI Agents</button>
+        <button data-page="mapPage">GPS Map</button>
+        <button data-page="eventsPage">City Events</button>
+    </nav>
+
+    <main>
+        <section id="homePage" class="page">
+            <h2>Smart City Dashboard</h2>
+            <p>Welcome to AURORA AI Platform.</p>
+
+            <button id="runSimulation">Run Simulation</button>
+            <button id="resetSimulation">Reset Simulation</button>
+
+            <div id="simulationStatus">Simulation stopped</div>
+        </section>
+
+        <section id="agentsPage" class="page" hidden>
+            <h2>AI Agents Monitoring</h2>
+            <div id="agents"></div>
+        </section>
+
+        <section id="mapPage" class="page" hidden>
+            <h2>GPS City Map</h2>
+            <div id="map" style="height:450px;width:100%;"></div>
+        </section>
+
+        <section id="eventsPage" class="page" hidden>
+            <h2>City Events</h2>
+            <div id="events"></div>
+        </section>
+    </main>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="/js/app.js"></script>
+
+</body>
+</html>
